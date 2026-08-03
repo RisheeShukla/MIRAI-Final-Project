@@ -21,7 +21,8 @@ st.set_page_config(
 st.markdown("""
     <style>
     .stMetric { background-color: #f0f2f6; padding: 15px; border-radius: 10px; }
-    [data-testid="stSidebar"] { background-color: #1e1e2f; color: white;}
+    [data-testid="stSidebar"] { background-color: #000000; color: white;}
+    [data-testid="stSidebar"] h1 { color: #ffffff !important; background-color: #000000; }
     .science-box {
         background-color: #fff8e1;
         border-left: 5px solid #f0a500;
@@ -31,7 +32,6 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
-
 
 @st.cache_data
 def load_data():
@@ -45,7 +45,6 @@ except FileNotFoundError:
     st.error("Error: screentime.csv not found. Please create the dataset.")
     st.stop()
 
-
 st.sidebar.title("⚡ Life-OS Settings")
 st.sidebar.markdown("---")
 
@@ -56,7 +55,7 @@ daily_goal = st.sidebar.slider("🎯 Daily Screen Time Limit (mins)", min_value=
 day_data = data[data['Date'] == selected_date]
 
 st.markdown(":rainbow[# 🧠 Life-OS: Digital Wellbeing Coach]")
-st.markdown(f"**Analyzing data for:** {selected_date}")
+st.markdown(f"### Analyzing data for: {selected_date}")
 
 total_minutes = day_data['Minutes_Used'].sum()
 top_app = day_data.loc[day_data['Minutes_Used'].idxmax()]['App_Name'] if not day_data.empty else "None"
@@ -72,7 +71,7 @@ with col3:
 
 st.markdown("---")
 
-st.markdown(":rainbow[## 📊 Trends & Breakdown]")
+st.markdown(":rainbow[# 📊 Trends & Breakdown]")
 
 trend_data = data.groupby('Date')['Minutes_Used'].sum().reset_index()
 trend_data['Over_Goal'] = trend_data['Minutes_Used'] > daily_goal
@@ -104,7 +103,6 @@ with chart_col2:
     fig_donut.update_layout(height=420, showlegend=False)
     st.plotly_chart(fig_donut, use_container_width=True)
 
-# Top apps horizontal bar for the selected day
 app_data = day_data.groupby('App_Name')['Minutes_Used'].sum().reset_index().sort_values('Minutes_Used')
 fig_apps = px.bar(
     app_data, x='Minutes_Used', y='App_Name', orientation='h',
@@ -116,7 +114,7 @@ st.plotly_chart(fig_apps, use_container_width=True)
 
 st.markdown("---")
 
-st.markdown(":rainbow[## 🤖 AI Analysis & The Guilt-Trip Avatar]")
+st.markdown(":rainbow[# 🤖 AI Analysis & The Guilt-Trip Avatar]")
 
 if not API_KEY:
     st.warning("⚠️ Please add your GEMINI_API_KEY to your .env file to enable AI coaching.")
@@ -190,7 +188,7 @@ else:
                     image_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=400&height=400&nologo=true"
                     st.image(image_url, caption=f"Prompt: {image_prompt}")
 
-                st.markdown("### 🔬 Science Says")
+                st.markdown("## 🔬 Science Says")
                 st.markdown(f'<div class="science-box">{science_text}</div>', unsafe_allow_html=True)
                 st.caption("General research context, not a medical diagnosis or advice.")
 
